@@ -1,5 +1,5 @@
-[currently ded af] :(
+[currently ded af] :(<br/>
 This is a backend server that will get data from supabase.
 
-Flow:
+Flow: <br/>
 main.rs -> server.rs -> routes -> controller -> service -> repository -> model
