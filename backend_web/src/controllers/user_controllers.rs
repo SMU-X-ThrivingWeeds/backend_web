@@ -1,10 +1,7 @@
 use crate::{models::user_model::User, server::AppState, services::user_service};
-use axum::{
-    extract::{Extension, State},
-    http::StatusCode,
-    response::Json,
-};
+use axum::{debug_handler, extract::State, http::StatusCode, response::Json};
 
+#[debug_handler]
 pub async fn get_users(state: State<AppState>) -> Result<Json<Vec<User>>, (StatusCode, String)> {
     println!("get_users");
     let pool = state.pool.clone();
