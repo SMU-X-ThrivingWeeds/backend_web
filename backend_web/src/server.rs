@@ -11,6 +11,8 @@ use tracing::log::info;
 
 use crate::config::AppConfig;
 use crate::routes::user_routes;
+use crate::routes::points_routes;
+
 
 #[derive(Clone)]
 pub struct AppState {
@@ -22,6 +24,7 @@ pub async fn serve(config: Arc<AppConfig>, pool: PgPool) -> anyhow::Result<()> {
     let app = Router::new()
         .route("/", get(|| async { "Hello, world!" }))
         .nest("/", user_routes::user_routes())
+        .nest("/", points_routes::points_routes())
         .with_state(AppState { pool })
         .layer(
             // Use ServiceBuilder to apply multiple middleware

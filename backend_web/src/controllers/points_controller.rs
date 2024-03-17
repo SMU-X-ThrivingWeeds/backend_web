@@ -1,14 +1,14 @@
-use crate::{models::user_model::User, server::AppState, services::user_service};
 use axum::{debug_handler, extract::State, http::StatusCode, response::Json};
+use crate::{server::AppState, services::points_service};
 
 #[debug_handler]
-pub async fn get_users(state: State<AppState>) -> Result<Json<Vec<User>>, (StatusCode, String)> {
-    println!("get all users");
+pub async fn get_all_points(state: State<AppState>) -> Result<Json<Vec<i32>>, (StatusCode, String)> {
+    println!("fetching points data");
     let pool = state.pool.clone();
     println!("pool: {:?}", pool);
-    user_service::fetch_users(&pool)
+    points_service::fetch_all_points(&pool)
         .await
-        .map(|users| Json(users)) // Map Ok variant to Json
+        .map(|points| Json(points)) // Map Ok variant to Json
         .map_err(internal_error)
 }
 
