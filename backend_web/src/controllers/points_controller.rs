@@ -1,15 +1,17 @@
-use axum::{debug_handler, extract::State, http::StatusCode, response::Json};
+use axum::{extract::State, http::StatusCode, response::Json};
 use crate::{server::AppState, services::points_service};
 
-#[debug_handler]
-pub async fn get_all_points(state: State<AppState>) -> Result<Json<Vec<i32>>, (StatusCode, String)> {
-    println!("fetching points data");
+pub async fn get_all_points(state: State<AppState>) -> Result<Json<Vec<i64>>, (StatusCode, String)> {
     let pool = state.pool.clone();
-    println!("pool: {:?}", pool);
-    points_service::fetch_all_points(&pool)
+    let points = points_service::fetch_all_points(&pool)
         .await
-        .map(|points| Json(points)) // Map Ok variant to Json
-        .map_err(internal_error)
+        .map(|points| {
+            points.iter().map(|point| point.points).collect::<Vec<i64>>() // Extract points field from Points struct
+        })
+        .map(|points| Json(points)) // Convert to JSON
+        .map_err(internal_error)?;
+
+    Ok(points)
 }
 
 fn internal_error<E>(err: E) -> (StatusCode, String)

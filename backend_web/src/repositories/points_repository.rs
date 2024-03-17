@@ -7,9 +7,9 @@ use uuid::Uuid;
 
 impl<'r> FromRow<'r, sqlx::postgres::PgRow> for Points {
     fn from_row(row: &'r sqlx::postgres::PgRow) -> Result<Self, sqlx::Error> {
-        let id: i8 = row.try_get("id")?; // Assuming id is of type integer
+        let id: i64 = row.try_get("id")?; // Assuming id is of type integer
         let user_id: Uuid = row.try_get("user_id")?;
-        let points: i8 = row.try_get("points")?; // Assuming points is of type smallint or integer
+        let points: i64 = row.try_get("points")?; // Assuming points is of type smallint or integer
         let created_at: DateTime<Utc> = row.try_get("created_at")?;
         
         Ok(Points {
@@ -21,8 +21,16 @@ impl<'r> FromRow<'r, sqlx::postgres::PgRow> for Points {
     }
 }
 
-pub async fn get_all_points(pool: &PgPool) -> Result<Vec<i32>, sqlx::Error> {
-    let points: Vec<i32> = sqlx::query_scalar!("SELECT points FROM points")
+// pub async fn get_all_points(pool: &PgPool) -> Result<Vec<i32>, sqlx::Error> {
+//     let points: Vec<i32> = sqlx::query_scalar!("SELECT points FROM points")
+//         .fetch_all(pool)
+//         .await?;
+//     Ok(points)
+// }
+
+pub async fn get_all_points(pool: &PgPool) -> Result<Vec<Points>, sqlx::Error> {
+    // Example query to retrieve all users from the database
+    let points = sqlx::query_as::<_, Points>("SELECT * FROM points")
         .fetch_all(pool)
         .await?;
     Ok(points)
