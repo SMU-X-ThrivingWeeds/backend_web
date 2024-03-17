@@ -1,5 +1,3 @@
-// services.rs
-
 use sqlx::{Error, PgPool};
 use crate::repositories::points_repository;
 use crate::models::points_model::Points;
