@@ -10,6 +10,10 @@ pub fn user_routes() -> Router<AppState> {
             Router::new()
                 .route("/", get(user_controllers::get_user))
                 .route("/points", get(user_controllers::get_user_points))
-                .route("/bottles", get(user_controllers::get_user_bottles)), // .route("/transactions", get(user_controllers::get_user_transactions))
+                .route("/bottles", get(user_controllers::get_user_bottles))
+                .route(
+                    "/transactions",
+                    get(user_controllers::get_user_transactions),
+                ),
         )
 }

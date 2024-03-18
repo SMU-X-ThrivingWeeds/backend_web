@@ -1,4 +1,7 @@
-use crate::models::{points_model::Points, user_bottles_model::UserBottles, user_model::User};
+use crate::models::{
+    points_model::Points, transaction_model::UserTransactions, user_bottles_model::UserBottles,
+    user_model::User,
+};
 use sqlx::PgPool;
 use uuid::Uuid;
 
@@ -42,7 +45,7 @@ FROM
   JOIN bottle_types bt2 ON bt.bottle_type = bt2.id
   JOIN manufacturers m ON bt2.manufacturer_id = m.id
 WHERE
-  bt.user_id = 'a08d24a9-e979-48d5-b464-4fe3305d95e0'
+  bt.user_id = $1
 GROUP BY
   user_id,
   m.name,
@@ -53,4 +56,39 @@ GROUP BY
     .fetch_all(pool)
     .await?;
     Ok(user_bottles)
+}
+
+pub async fn get_user_transactions(
+    pool: &PgPool,
+    id: Uuid,
+) -> Result<Vec<UserTransactions>, sqlx::Error> {
+    // Example query to retrieve a user's transactions from the database
+    let user_transactions = sqlx::query_as::<_, UserTransactions>(
+        "
+SELECT
+  bt.user_id,
+  bt.transaction_group_id,
+  bt.quantity AS bottle_quantity,
+  bt2.drink_name,
+  m.name AS manufacturer_name,
+  bt.points
+FROM
+  bottle_transactions bt
+  JOIN bottle_types bt2 ON bt.bottle_type = bt2.id
+  JOIN manufacturers m ON bt2.manufacturer_id = m.id
+WHERE
+  user_id = $1
+GROUP BY
+  bt.id,
+  bt.transaction_group_id,
+  bt2.drink_name,
+  manufacturer_name
+ORDER BY
+  bt.transaction_group_id ASC;
+",
+    )
+    .bind(id)
+    .fetch_all(pool)
+    .await?;
+    Ok(user_transactions)
 }

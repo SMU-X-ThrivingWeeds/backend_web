@@ -1,5 +1,8 @@
 use crate::{
-    models::{points_model::Points, user_bottles_model::UserBottles, user_model::User},
+    models::{
+        points_model::Points, transaction_model::UserTransactions, user_bottles_model::UserBottles,
+        user_model::User,
+    },
     server::AppState,
     services::user_service,
 };
@@ -35,7 +38,6 @@ pub async fn get_user(
         Err(e) => {
             eprintln!("Error parsing UUID: {}", e);
             return Err(internal_error(e));
-            // Convert the uuid::Error into PgDatabaseError
         }
     };
 
@@ -60,7 +62,6 @@ pub async fn get_user_points(
         Err(e) => {
             eprintln!("Error parsing UUID: {}", e);
             return Err(internal_error(e));
-            // Convert the uuid::Error into PgDatabaseError
         }
     };
 
@@ -92,6 +93,30 @@ pub async fn get_user_bottles(
     user_service::fetch_user_bottles(&pool, user_uuid)
         .await
         .map(|user_bottles| Json(user_bottles)) // Map Ok variant to Json
+        .map_err(internal_error)
+}
+
+#[debug_handler]
+pub async fn get_user_transactions(
+    state: State<AppState>,
+    Path(id): Path<String>,
+) -> Result<Json<Vec<UserTransactions>>, (StatusCode, String)> {
+    let pool = state.pool.clone();
+
+    let user_uuid = match Uuid::parse_str(&id) {
+        Ok(user_uuid) => {
+            println!("Parsed UUID: {}", user_uuid);
+            user_uuid
+        }
+        Err(e) => {
+            eprintln!("Error parsing UUID: {}", e);
+            return Err(internal_error(e));
+        }
+    };
+
+    user_service::fetch_user_transactions(&pool, user_uuid)
+        .await
+        .map(|user_transactions| Json(user_transactions)) // Map Ok variant to Json
         .map_err(internal_error)
 }
 
