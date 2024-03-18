@@ -1,14 +1,97 @@
-use crate::{models::user_model::User, server::AppState, services::user_service};
-use axum::{debug_handler, extract::State, http::StatusCode, response::Json};
+use crate::{
+    models::{points_model::Points, user_bottles_model::UserBottles, user_model::User},
+    server::AppState,
+    services::user_service,
+};
+use axum::{
+    debug_handler,
+    extract::{Path, State},
+    http::StatusCode,
+    response::Json,
+};
+use uuid::Uuid;
 
 #[debug_handler]
 pub async fn get_users(state: State<AppState>) -> Result<Json<Vec<User>>, (StatusCode, String)> {
-    println!("get all users");
     let pool = state.pool.clone();
-    println!("pool: {:?}", pool);
     user_service::fetch_users(&pool)
         .await
         .map(|users| Json(users)) // Map Ok variant to Json
+        .map_err(internal_error)
+}
+
+#[debug_handler]
+pub async fn get_user(
+    state: State<AppState>,
+    Path(id): Path<String>,
+) -> Result<Json<User>, (StatusCode, String)> {
+    let pool = state.pool.clone();
+
+    let user_uuid = match Uuid::parse_str(&id) {
+        Ok(user_uuid) => {
+            println!("Parsed UUID: {}", user_uuid);
+            user_uuid
+        }
+        Err(e) => {
+            eprintln!("Error parsing UUID: {}", e);
+            return Err(internal_error(e));
+            // Convert the uuid::Error into PgDatabaseError
+        }
+    };
+
+    user_service::fetch_user(&pool, user_uuid)
+        .await
+        .map(|user| Json(user)) // Map Ok variant to Json
+        .map_err(internal_error)
+}
+
+#[debug_handler]
+pub async fn get_user_points(
+    state: State<AppState>,
+    Path(id): Path<String>,
+) -> Result<Json<Points>, (StatusCode, String)> {
+    let pool = state.pool.clone();
+
+    let user_uuid = match Uuid::parse_str(&id) {
+        Ok(user_uuid) => {
+            println!("Parsed UUID: {}", user_uuid);
+            user_uuid
+        }
+        Err(e) => {
+            eprintln!("Error parsing UUID: {}", e);
+            return Err(internal_error(e));
+            // Convert the uuid::Error into PgDatabaseError
+        }
+    };
+
+    user_service::fetch_user_points(&pool, user_uuid)
+        .await
+        .map(|points| Json(points)) // Map Ok variant to Json
+        .map_err(internal_error)
+}
+
+#[debug_handler]
+pub async fn get_user_bottles(
+    state: State<AppState>,
+    Path(id): Path<String>,
+) -> Result<Json<Vec<UserBottles>>, (StatusCode, String)> {
+    let pool = state.pool.clone();
+
+    let user_uuid = match Uuid::parse_str(&id) {
+        Ok(user_uuid) => {
+            println!("Parsed UUID: {}", user_uuid);
+            user_uuid
+        }
+        Err(e) => {
+            eprintln!("Error parsing UUID: {}", e);
+            return Err(internal_error(e));
+            // Convert the uuid::Error into PgDatabaseError
+        }
+    };
+
+    user_service::fetch_user_bottles(&pool, user_uuid)
+        .await
+        .map(|user_bottles| Json(user_bottles)) // Map Ok variant to Json
         .map_err(internal_error)
 }
 

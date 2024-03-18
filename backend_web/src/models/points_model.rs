@@ -1,9 +1,8 @@
-use sqlx::
-    types::chrono::{DateTime, Utc};
-
+use chrono::{DateTime, Utc};
+use serde::Serialize;
 use uuid::Uuid;
 
-#[derive(Debug)]
+#[derive(Debug, Serialize)]
 pub struct Points {
     pub id: i64,
     pub user_id: Uuid,
