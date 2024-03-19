@@ -120,6 +120,30 @@ pub async fn get_user_transactions(
         .map_err(internal_error)
 }
 
+// #[debug_handler]
+// pub async fn post_user_transaction(
+//     state: State<AppState>,
+//     Path(id): Path<String>,
+// ) -> Result<Json<UserTransactions>, (StatusCode, String)> {
+//     let pool = state.pool.clone();
+
+//     let user_uuid = match Uuid::parse_str(&id) {
+//         Ok(user_uuid) => {
+//             println!("Parsed UUID: {}", user_uuid);
+//             user_uuid
+//         }
+//         Err(e) => {
+//             eprintln!("Error parsing UUID: {}", e);
+//             return Err(internal_error(e));
+//         }
+//     };
+
+//     user_service::create_user_transaction(&pool, user_uuid)
+//         .await
+//         .map(|user_transactions| Json(user_transactions)) // Map Ok variant to Json
+//         .map_err(internal_error)
+// }
+
 fn internal_error<E>(err: E) -> (StatusCode, String)
 where
     E: std::error::Error,

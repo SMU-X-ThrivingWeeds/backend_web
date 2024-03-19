@@ -1,7 +1,3 @@
-use axum::{
-    routing::{get, patch, post},
-    Router,
-};
 use clap::Parser;
 use std::sync::Arc;
 
@@ -35,7 +31,3 @@ pub fn get_app_config() -> Arc<AppConfig> {
     dotenv::dotenv().ok();
     Arc::new(AppConfig::parse())
 }
-
-// async fn handler() -> &'static str {
-//     return "Hello, world!";
-// }
