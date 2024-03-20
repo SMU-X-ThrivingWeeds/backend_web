@@ -1,5 +1,5 @@
 use chrono::{DateTime, Utc};
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, Row};
 
 #[derive(Debug, Serialize)]
@@ -7,6 +7,11 @@ pub struct Manufacturers {
     pub id: i64,
     pub name: String,
     pub created_at: DateTime<Utc>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct NewManufacturer {
+    pub name: String,
 }
 
 impl<'r> FromRow<'r, sqlx::postgres::PgRow> for Manufacturers {
