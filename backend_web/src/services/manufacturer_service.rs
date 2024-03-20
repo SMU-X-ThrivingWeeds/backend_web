@@ -6,6 +6,7 @@ pub async fn fetch_all_manufacturers(pool: &PgPool) -> Result<Vec<Manufacturers>
     manufacturer_repository::get_all_manufacturers(pool).await
 }
 
+
 pub async fn create_manufacturer_if_not_exists(
     pool: &PgPool,
     name: &str,

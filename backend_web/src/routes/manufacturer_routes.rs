@@ -11,6 +11,9 @@ pub fn manufacturer_routes() -> Router<AppState> {
         "/manufacturer",
         Router::new()
             .route("/", post(manufacturer_controller::create_manufacturer))
-            .route("/all", get(manufacturer_controller::get_all_manufacturers)),
-    )
+            .route("/all", get(manufacturer_controller::get_all_manufacturers))
+            .nest("/:id/drink", Router::new()
+                //.route("/:id", method_router)
+                //.route("/all", get(manufacturer_controller::get_drink_count)))
+            ))
 }

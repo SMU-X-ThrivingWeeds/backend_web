@@ -29,3 +29,5 @@ pub async fn create_manufacturer(pool: &PgPool, name: &str) -> Result<Manufactur
     .await?;
     Ok(manufacturer)
 }
+
+

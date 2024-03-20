@@ -1,6 +1,7 @@
 use crate::models::manufacturer_model::{Manufacturers, NewManufacturer};
 use crate::{server::AppState, services::manufacturer_service};
-use axum::{extract::State, http::StatusCode, response::Json}; // Import the Manufacturers model
+use axum::{extract::State, http::StatusCode, response::Json};
+
 
 pub async fn get_all_manufacturers(
     state: State<AppState>,
@@ -12,6 +13,9 @@ pub async fn get_all_manufacturers(
         .map_err(internal_error)
 }
 
+
+
+
 pub async fn create_manufacturer(
     state: State<AppState>,
     Json(payload): Json<NewManufacturer>,
@@ -22,6 +26,8 @@ pub async fn create_manufacturer(
         .map(|manufacturer| Json(manufacturer))
         .map_err(internal_error)
 }
+
+
 
 fn internal_error<E>(err: E) -> (StatusCode, String)
 where
