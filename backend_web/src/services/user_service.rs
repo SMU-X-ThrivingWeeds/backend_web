@@ -5,7 +5,7 @@ use crate::{
     },
     repositories::user_repository,
 };
-use sqlx::{postgres::PgDatabaseError, PgPool};
+use sqlx::PgPool;
 use uuid::Uuid;
 
 pub async fn fetch_users(pool: &PgPool) -> Result<Vec<User>, sqlx::Error> {
