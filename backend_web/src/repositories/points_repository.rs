@@ -8,10 +8,3 @@ pub async fn get_all_points(pool: &PgPool) -> Result<Vec<Points>, sqlx::Error> {
         .await?;
     Ok(points)
 }
-
-// pub async fn get_all_points(pool: &PgPool) -> Result<Vec<i32>, sqlx::Error> {
-//     let points: Vec<i32> = sqlx::query_scalar!("SELECT points FROM points")
-//         .fetch_all(pool)
-//         .await?;
-//     Ok(points)
-// }

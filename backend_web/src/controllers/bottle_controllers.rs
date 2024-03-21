@@ -4,22 +4,25 @@ use crate::{
     services::{bottle_service, manufacturer_service},
 };
 use axum::{
-    extract::{Json, Path, State},
+    extract::{Path, State},
     http::StatusCode,
-    response::Json as JsonResponse,
+    response::Json,
 };
 
 pub async fn add_bottle_type(
     state: State<AppState>,
     Path(manufacturer_id): Path<i64>,
     Json(payload): Json<NewBottleType>,
-) -> Result<JsonResponse<BottleType>, (StatusCode, String)> {
+) -> Result<Json<BottleType>, (StatusCode, String)> {
     let pool = state.pool.clone();
     // check if manufacturer exists
     manufacturer_service::fetch_manufacturer_by_id(&pool, manufacturer_id)
         .await
         .map_err(internal_error)?
-        .ok_or((StatusCode::NOT_FOUND, "Manufacturer not found".to_string()))?;
+        .ok_or((
+            StatusCode::NOT_FOUND,
+            format!("Manufacturer of id: {} is not found", manufacturer_id),
+        ))?;
 
     let bottle_type = bottle_service::add_bottle_type_if_not_exists(
         &pool,
@@ -28,7 +31,7 @@ pub async fn add_bottle_type(
         &payload.barcode,
     )
     .await
-    .map(JsonResponse)
+    .map(|bottle_type| Json(bottle_type))
     .map_err(internal_error)?;
     return Ok(bottle_type);
 }

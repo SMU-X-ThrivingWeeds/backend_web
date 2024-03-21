@@ -31,12 +31,14 @@ pub async fn add_bottle_type(
     drink_name: &str,
     barcode: &str,
 ) -> Result<BottleType, sqlx::Error> {
+    let points = 10;
     let bottle_type = sqlx::query_as::<_, BottleType>(
-        "INSERT INTO bottle_types (manufacturer_id, drink_name, barcode) VALUES ($1, $2, $3) RETURNING *",
+        "INSERT INTO bottle_types (manufacturer_id, drink_name, barcode, points) VALUES ($1, $2, $3, $4) RETURNING *",
     )
     .bind(manufacturer_id)
     .bind(drink_name)
     .bind(barcode)
+    .bind(points)
     .fetch_one(pool)
     .await?;
     Ok(bottle_type)

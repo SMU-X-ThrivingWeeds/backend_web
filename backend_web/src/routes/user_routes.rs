@@ -14,10 +14,15 @@ pub fn user_routes() -> Router<AppState> {
                 .route("/", get(user_controllers::get_user))
                 .route("/points", get(user_controllers::get_user_points)) // gets the points of the user
                 .route("/bottles", get(user_controllers::get_user_bottles)) // gets all the bottles that the user has deposited
-                .route(
-                    "/transactions",
-                    get(user_controllers::get_user_transactions),
-                ), // gets all the transactions that the user has made
-                   // .route("/transaction", post(user_controllers::post_user_transaction)) // posts a transaction for the user
+                .nest(
+                    "/transaction",
+                    Router::new()
+                        .route("/", post(user_controllers::create_user_transaction)) // posts a transaction for the user
+                        // .route(
+                        //     ":transaction_id",
+                        //     get(user_controllers::get_user_transaction),
+                        // ) // gets a specific transaction that the user has made
+                        .route("/all", get(user_controllers::get_user_transactions)), // gets all the transactions that the user has made
+                ),
         )
 }
