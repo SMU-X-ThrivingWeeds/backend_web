@@ -8,13 +8,13 @@ pub struct BottleType {
     pub drink_name: String,
     pub points: i64,
     pub created_at: DateTime<Utc>,
+    pub barcode: String,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct NewBottleType {
-    pub manufacturer_id: i64,
     pub drink_name: String,
-    pub points: i64,
+    pub barcode: String,
 }
 
 impl<'r> FromRow<'r, sqlx::postgres::PgRow> for BottleType {
@@ -25,11 +25,13 @@ impl<'r> FromRow<'r, sqlx::postgres::PgRow> for BottleType {
         let drink_name: String = row.try_get("drink_name")?;
         let points: i64 = row.try_get("points")?;
         let created_at: DateTime<Utc> = row.try_get("created_at")?;
+        let barcode: String = row.try_get("barcode")?;
         let bottle_type = BottleType {
             manufacturer_id,
             drink_name,
             points,
             created_at,
+            barcode,
         };
         Ok(bottle_type)
     }

@@ -20,6 +20,18 @@ pub async fn get_manufacturer_by_name(
     Ok(manufacturer)
 }
 
+pub async fn get_manufacturer_by_id(
+    pool: &PgPool,
+    id: i64,
+) -> Result<Option<Manufacturers>, sqlx::Error> {
+    let manufacturer =
+        sqlx::query_as::<_, Manufacturers>("SELECT * FROM manufacturers WHERE id = $1")
+            .bind(id)
+            .fetch_optional(pool)
+            .await?;
+    Ok(manufacturer)
+}
+
 pub async fn create_manufacturer(pool: &PgPool, name: &str) -> Result<Manufacturers, sqlx::Error> {
     let manufacturer = sqlx::query_as::<_, Manufacturers>(
         "INSERT INTO manufacturers (name) VALUES ($1) RETURNING *",
@@ -29,5 +41,3 @@ pub async fn create_manufacturer(pool: &PgPool, name: &str) -> Result<Manufactur
     .await?;
     Ok(manufacturer)
 }
-
-

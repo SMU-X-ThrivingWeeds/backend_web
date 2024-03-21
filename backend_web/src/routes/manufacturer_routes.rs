@@ -1,4 +1,7 @@
-use crate::{controllers::manufacturer_controller, server::AppState};
+use crate::{
+    controllers::{bottle_controllers, manufacturer_controller},
+    server::AppState,
+};
 use axum::{
     routing::{get, post},
     Router,
@@ -12,8 +15,10 @@ pub fn manufacturer_routes() -> Router<AppState> {
         Router::new()
             .route("/", post(manufacturer_controller::create_manufacturer))
             .route("/all", get(manufacturer_controller::get_all_manufacturers))
-            .nest("/:id/drink", Router::new()
-                //.route("/:id", method_router)
-                //.route("/all", get(manufacturer_controller::get_drink_count)))
-            ))
+            .nest(
+                "/:manufacturer_id/drink",
+                Router::new().route("/", post(bottle_controllers::add_bottle_type)), //.route("/:bottle_type_id", method_router)
+                                                                                     //.route("/all", get(manufacturer_controller::get_drink_count)))
+            ),
+    )
 }

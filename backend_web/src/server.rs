@@ -10,9 +10,8 @@ use tower_http::cors::{self, CorsLayer};
 use tracing::log::info;
 
 use crate::config::AppConfig;
-use crate::routes::bottle_routes;
-use crate::routes::manufacturer_routes;
 use crate::routes::bottle_transaction_routes;
+use crate::routes::manufacturer_routes;
 use crate::routes::points_routes;
 use crate::routes::rvm_routes;
 use crate::routes::user_routes;
@@ -28,7 +27,6 @@ pub async fn serve(config: Arc<AppConfig>, pool: PgPool) -> anyhow::Result<()> {
         .route("/", get(|| async { "Hello, world!" }))
         .nest("/", user_routes::user_routes())
         .nest("/", points_routes::points_routes())
-        .nest("/", bottle_routes::bottle_routes())
         .nest("/", manufacturer_routes::manufacturer_routes())
         .nest("/", bottle_transaction_routes::bottle_transaction_routes())
         .nest("/", rvm_routes::rvm_routes())
