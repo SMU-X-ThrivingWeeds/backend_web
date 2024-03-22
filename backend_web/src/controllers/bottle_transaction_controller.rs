@@ -1,4 +1,4 @@
-    use crate::models::bottle_transaction_model::BottleTransactions;
+    use crate::models::bottle_transaction_model::{BottleCount, BottleTransactions};
     use crate::{server::AppState, services::bottle_transaction_service};
     use axum::{extract::State, http::StatusCode, response::Json};
 
@@ -14,14 +14,14 @@
 
     pub async fn get_drink_counts(
         state: State<AppState>,
-    ) -> Result<Json<Vec<BottleTransactions>>, (StatusCode, String)> {
+    ) -> Result<Json<Vec<BottleCount>>, (StatusCode, String)> {
         let pool = state.pool.clone();
-        let counts = bottle_transaction_service::get_drink_counts(&pool)
+        bottle_transaction_service::get_drink_counts(&pool)
             .await
             .map(|counts| Json(counts))
-            .map_err(internal_error)?;
+            .map_err(internal_error)
 
-        Ok(counts)
+        // Ok(counts)
     }
 
     fn internal_error<E>(err: E) -> (StatusCode, String)

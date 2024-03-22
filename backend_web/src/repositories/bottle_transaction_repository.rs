@@ -1,5 +1,6 @@
-use crate::models::bottle_transaction_model::BottleTransactions;
+use crate::models::bottle_transaction_model::{BottleCount, BottleTransactions};
 use sqlx::PgPool;
+
 
 pub async fn get_all_transactions(pool: &PgPool) -> Result<Vec<BottleTransactions>, sqlx::Error> {
     let transactions =
@@ -9,8 +10,8 @@ pub async fn get_all_transactions(pool: &PgPool) -> Result<Vec<BottleTransaction
     Ok(transactions)
 }
 
-pub async fn get_drink_counts(pool: &PgPool) -> Result<Vec<BottleTransactions>, sqlx::Error> {
-    let counts = sqlx::query_as::<_, BottleTransactions>(
+pub async fn get_drink_counts(pool: &PgPool) -> Result<Vec<BottleCount>, sqlx::Error> {
+    let counts = sqlx::query_as::<_, BottleCount>(
         "SELECT bottle_type, SUM(quantity) as count FROM bottle_transactions GROUP BY bottle_type",
     )
     .fetch_all(pool)
