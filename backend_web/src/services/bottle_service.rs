@@ -1,4 +1,7 @@
-use crate::{models::bottle_type_model::BottleType, repositories::bottle_type_repository};
+use crate::{
+    models::bottle_type_model::{BottleType, CheckBottles},
+    repositories::bottle_type_repository,
+};
 use sqlx::PgPool;
 
 pub async fn add_bottle_type_if_not_exists(
@@ -22,4 +25,24 @@ pub async fn add_bottle_type_if_not_exists(
             Err(err)
         }
     }
+}
+
+pub async fn check_bottles(
+    pool: &PgPool,
+    barcode_arr: Vec<String>,
+) -> Result<CheckBottles, sqlx::Error> {
+    let existing_bottles = bottle_type_repository::check_bottles(pool, &barcode_arr).await?;
+    let bottles_not_exists: Vec<String> = barcode_arr
+        .iter()
+        .filter(|barcode| {
+            !existing_bottles
+                .iter()
+                .any(|bottle| bottle.barcode == **barcode)
+        })
+        .map(|barcode| barcode.to_string())
+        .collect();
+    Ok(CheckBottles {
+        barcode_exists: existing_bottles,
+        barcode_not_exists: bottles_not_exists,
+    })
 }

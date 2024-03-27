@@ -1,5 +1,5 @@
 use crate::{
-    models::bottle_type_model::{BottleType, NewBottleType},
+    models::bottle_type_model::{BottleType, CheckBottles, CheckBottlesInput, NewBottleType},
     server::AppState,
     services::{bottle_service, manufacturer_service},
 };
@@ -34,6 +34,19 @@ pub async fn add_bottle_type(
     .map(|bottle_type| Json(bottle_type))
     .map_err(internal_error)?;
     return Ok(bottle_type);
+}
+
+pub async fn check_bottles(
+    state: State<AppState>,
+    Json(payload): Json<CheckBottlesInput>,
+) -> Result<Json<CheckBottles>, (StatusCode, String)> {
+    let pool = state.pool.clone();
+    let barcode_arr = payload.barcodes_to_check.clone();
+    let check_bottles = bottle_service::check_bottles(&pool, barcode_arr)
+        .await
+        .map(|check_bottles| Json(check_bottles))
+        .map_err(internal_error)?;
+    return Ok(check_bottles);
 }
 
 fn internal_error<E>(err: E) -> (StatusCode, String)

@@ -11,6 +11,7 @@ use tracing::log::info;
 
 use crate::config::AppConfig;
 use crate::routes::bottle_transaction_routes;
+use crate::routes::bottle_type_routes;
 use crate::routes::manufacturer_routes;
 use crate::routes::points_routes;
 use crate::routes::rvm_routes;
@@ -30,6 +31,7 @@ pub async fn serve(config: Arc<AppConfig>, pool: PgPool) -> anyhow::Result<()> {
         .nest("/", manufacturer_routes::manufacturer_routes())
         .nest("/", bottle_transaction_routes::bottle_transaction_routes())
         .nest("/", rvm_routes::rvm_routes())
+        .nest("/", bottle_type_routes::bottle_type_routes())
         .with_state(AppState { pool })
         .layer(
             // Use ServiceBuilder to apply multiple middleware

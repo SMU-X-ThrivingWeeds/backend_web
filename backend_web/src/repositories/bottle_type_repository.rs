@@ -43,3 +43,15 @@ pub async fn add_bottle_type(
     .await?;
     Ok(bottle_type)
 }
+
+pub async fn check_bottles(
+    pool: &PgPool,
+    barcode_arr: &Vec<String>,
+) -> Result<Vec<BottleType>, sqlx::Error> {
+    let existing_bottles =
+        sqlx::query_as::<_, BottleType>("SELECT * FROM bottle_types WHERE barcode = ANY($1)")
+            .bind(&barcode_arr)
+            .fetch_all(pool)
+            .await?;
+    Ok(existing_bottles)
+}

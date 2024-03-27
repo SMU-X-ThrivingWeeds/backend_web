@@ -2,7 +2,7 @@ use chrono::{DateTime, Utc};
 use serde::{Deserialize, Serialize};
 use sqlx::{FromRow, Row};
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize, Deserialize)]
 pub struct BottleType {
     pub id: i64,
     pub manufacturer_id: i64,
@@ -16,6 +16,17 @@ pub struct BottleType {
 pub struct NewBottleType {
     pub drink_name: String,
     pub barcode: String,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CheckBottles {
+    pub barcode_exists: Vec<BottleType>,
+    pub barcode_not_exists: Vec<String>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+pub struct CheckBottlesInput {
+    pub barcodes_to_check: Vec<String>,
 }
 
 impl<'r> FromRow<'r, sqlx::postgres::PgRow> for BottleType {
