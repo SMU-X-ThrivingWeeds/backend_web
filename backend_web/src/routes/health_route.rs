@@ -1,4 +1,4 @@
-use crate::{controllers::points_controller, server::AppState};
+use crate::server::AppState;
 use axum::{routing::get, Json, Router};
 
 pub fn health_routes() -> Router<AppState> {
