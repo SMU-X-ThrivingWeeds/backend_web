@@ -15,7 +15,9 @@ main.rs -> server.rs -> routes -> controller -> service -> repository -> model
  </br>&emsp;&emsp;&emsp;/drink         - POST: creates a bottle_type using the manufacturer name
  </br>&emsp;&emsp;&emsp;&emsp;/:id       - GET: returns number of bottles collected for the specified drink
  </br>&emsp;&emsp;&emsp;&emsp;&emsp;/all       - GET: returns number of bottles collected for all drinks
- </br>&emsp;/rvm  - POST: adds a rvm with its location
- </br>&emsp;&emsp;/locations         - GET: returns all locations of RVMs
+ </br>&emsp;/rvm  - POST: adds a rvm with its location, longitude and latitude
+ </br>&emsp;&emsp;/all         - GET: returns details of all RVMs
+ </br>&emsp;&emsp;/:id         - GET: returns details of specified RVM
+ </br>&emsp;&emsp;&emsp;/status         - PATCH: update status of specified RVM
  </br>&emsp;/transactions/all  - GET: returns all bottle transactions
  </br>&emsp;/transactions/count - GET: returns bottle count of each bottle type
