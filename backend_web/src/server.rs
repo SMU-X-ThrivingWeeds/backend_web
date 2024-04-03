@@ -1,6 +1,10 @@
 use std::sync::Arc;
 
 use anyhow::Context;
+use axum::http::header::ACCEPT;
+use axum::http::header::AUTHORIZATION;
+use axum::http::header::CONTENT_TYPE;
+use axum::http::header::COOKIE;
 use axum::routing::get;
 use axum::Router;
 use sqlx::PgPool;
@@ -49,7 +53,7 @@ pub async fn serve(config: Arc<AppConfig>, pool: PgPool) -> anyhow::Result<()> {
                     //     Method::DELETE,
                     //     Method::PUT,
                     // ])
-                    // .allow_headers([AUTHORIZATION, ACCEPT, COOKIE, CONTENT_TYPE]),
+                    .allow_headers([AUTHORIZATION, ACCEPT, COOKIE, CONTENT_TYPE])
                     .allow_origin(cors::Any), // In a real application, you should validate the `Origin` header.
             ),
         );
